@@ -1,10 +1,12 @@
 from django.db import models
 
+from users.models import NULLABLE
+
 
 class Course(models.Model):
-    name = models.CharField(max_length=200)
-    preview = models.ImageField()
-    description = models.TextField()
+    name = models.CharField(max_length=200, verbose_name='name')
+    preview = models.ImageField(upload_to='product_img/', verbose_name='course preview', **NULLABLE)
+    description = models.TextField(verbose_name='description', **NULLABLE)
 
     class Meta:
         verbose_name = 'course'
@@ -15,12 +17,13 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
-    name = models.CharField(max_length=200)
-    description = models.TextField()
-    preview = models.ImageField()
-    video_link = models.CharField(max_length=400)
+    name = models.CharField(max_length=200, verbose_name='name')
+    description = models.TextField(verbose_name='description', **NULLABLE)
+    preview = models.ImageField(upload_to='product_img/', verbose_name='product preview', **NULLABLE)
+    video_link = models.CharField(max_length=400, **NULLABLE)
     course = models.ManyToManyField(
         'Course',
+        verbose_name='course'
     )
 
     class Meta:

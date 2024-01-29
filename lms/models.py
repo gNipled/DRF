@@ -21,10 +21,7 @@ class Lesson(models.Model):
     description = models.TextField(verbose_name='description', **NULLABLE)
     preview = models.ImageField(upload_to='product_img/', verbose_name='product preview', **NULLABLE)
     video_link = models.CharField(max_length=400, **NULLABLE)
-    course = models.ManyToManyField(
-        'Course',
-        verbose_name='course'
-    )
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='course')
 
     class Meta:
         verbose_name = 'lesson'

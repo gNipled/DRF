@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 
 from lms.models import Course
 from users.models import Payments, Subscriptions
-from users.serializers.Subscriptions import SubscriptionSerializer
+from users.serializers.subscriptions import SubscriptionSerializer
 from users.serializers.payments import PaymentsSerializer
 
 

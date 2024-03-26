@@ -1,6 +1,7 @@
 from rest_framework.generics import RetrieveAPIView, DestroyAPIView, ListAPIView, CreateAPIView, UpdateAPIView
 
 from lms.models import Lesson
+from lms.paginators import LessonPaginator
 from lms.serializers.lesson import LessonSerializer
 
 
@@ -17,6 +18,7 @@ class LessonDestroyView(DestroyAPIView):
 class LessonListView(ListAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
+    pagination_class = LessonPaginator
 
 
 class LessonCreateView(CreateAPIView):

@@ -9,13 +9,22 @@ from users.models import User, Subscriptions
 class LessonTestCase(APITestCase):
 
     def setUp(self) -> None:
+        self.user = User.objects.create(
+            email='test@test.com',
+            password='12345'
+        )
+        self.client.force_authenticate(
+            user=self.user
+        )
         self.course = Course.objects.create(
-            name='test'
+            name='test',
+            owner=self.user
         )
 
         self.lesson = Lesson.objects.create(
             name='test',
-            course=self.course
+            course=self.course,
+            owner=self.user
         )
 
     def test_get_list(self):
@@ -43,7 +52,8 @@ class LessonTestCase(APITestCase):
                         "description": self.lesson.description,
                         "preview": self.lesson.preview,
                         "video_link": self.lesson.video_link,
-                        "course": self.lesson.course_id
+                        "course": self.lesson.course_id,
+                        "owner": self.lesson.owner_id
                     }]
             }
         )
@@ -116,7 +126,8 @@ class LessonTestCase(APITestCase):
                 "description": self.lesson.description,
                 "preview": self.lesson.preview,
                 "video_link": self.lesson.video_link,
-                "course": self.lesson.course_id
+                "course": self.lesson.course_id,
+                "owner": self.lesson.owner_id
             }
         )
 
@@ -139,7 +150,8 @@ class LessonTestCase(APITestCase):
                 "description": "updated_description",
                 "preview": self.lesson.preview,
                 "video_link": self.lesson.video_link,
-                "course": self.lesson.course_id
+                "course": self.lesson.course_id,
+                "owner": self.lesson.owner_id
             }
         )
 
@@ -154,10 +166,3 @@ class LessonTestCase(APITestCase):
         )
 
 
-class SubscriptionsTestCase(APITestCase):
-    def setUp(self) -> None:
-        self.client = APIClient()
-        self.user = User.objects.create(email='test@test.com', password='12345')
-        self.client.force_authenticate(user=self.user)
-        self.course = Course.objects.create(name="test", owner=self.user)
-        self.subscription = Subscriptions.objects.create(course=self.course, user=self.user)

@@ -15,14 +15,14 @@ class LessonDetailView(RetrieveAPIView):
 class LessonDestroyView(DestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticated, IsOwner & ~IsModerator]
+    permission_classes = [IsAuthenticated, IsOwner]
 
 
 class LessonListView(ListAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     pagination_class = LessonPaginator
-    permission_classes = IsAuthenticated
+    permission_classes = [IsAuthenticated]
 
 
 class LessonCreateView(CreateAPIView):

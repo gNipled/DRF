@@ -28,7 +28,7 @@ class SubscriptionsAPIView(APIView):
         course_id = self.request.data.get('course')
         course_item = generics.get_object_or_404(Course, pk=course_id)
 
-        subs_item, created = Subscriptions.objects.get_or_create(user=user, course=course_item)
+        subs_item, created = Subscriptions.objects.get_or_create(users=user, course=course_item)
 
         if created:
             message = 'You are now subscribed to this course'

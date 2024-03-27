@@ -38,4 +38,3 @@ class SubscriptionsAPIView(APIView):
 
         return Response({"message": message})
 
-

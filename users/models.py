@@ -39,6 +39,8 @@ class Payments(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, verbose_name='lesson', **NULLABLE)
     payed_amount = models.IntegerField(verbose_name='amount payed')
     payment_method = models.CharField(max_length=2, choices=PAYMENT_METHOD_CHOICES, verbose_name='payment method')
+    payment_link = models.URLField(max_length=400, verbose_name='payment link', **NULLABLE)
+    payment_id = models.CharField(max_length=255, verbose_name='payment id', unique=True, **NULLABLE)
 
 
 class Subscriptions(models.Model):

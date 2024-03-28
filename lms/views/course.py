@@ -11,6 +11,7 @@ class CourseViewSet(ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     pagination_class = CoursePaginator
+
     def get_permissions(self):
         if self.action == 'create':
             permission_classes = [IsAuthenticated, ~IsModerator]

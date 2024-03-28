@@ -1,6 +1,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
-from rest_framework import generics
+from rest_framework import generics, serializers
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -8,19 +9,39 @@ from lms.models import Course
 from users.models import Payments, Subscriptions
 from users.serializers.subscriptions import SubscriptionSerializer
 from users.serializers.payments import PaymentsSerializer
+from users.services import create_stripe_price, create_stripe_session
 
 
 class PaymentDateAPIListView(generics.ListAPIView):
     serializer_class = PaymentsSerializer
     queryset = Payments.objects.all()
+    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ['course', 'lesson', 'payment_method']
     ordering_field = ['payment_date']
 
 
+class PaymentCreateAPIListView(generics.CreateAPIView):
+    serializer_class = PaymentsSerializer
+    queryset = Payments.objects.all()
+
+    def perform_create(self, serializer):
+        course = serializer.validated_data.get('course')
+        lesson = serializer.validated_data.get('lesson')
+        if course and lesson:
+            raise serializers.ValidationError('Can pay only for course or lesson')
+        elif not course and not lesson:
+            raise serializers.ValidationError('Need something to pay for')
+        payment = serializer.save()
+        stripe_price_id = create_stripe_price(payment)
+        payment.payment_link, payment.payment_id = create_stripe_session(stripe_price_id)
+        payment.save()
+
+
 class SubscriptionsAPIView(APIView):
     serializer_class = SubscriptionSerializer
     queryset = Payments.objects.all()
+    permission_classes = [IsAuthenticated]
 
     def post(self, *args, **kwargs):
 
@@ -37,4 +58,3 @@ class SubscriptionsAPIView(APIView):
             message = 'You are now unsubscribed from this course'
 
         return Response({"message": message})
-
